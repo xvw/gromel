@@ -1,4 +1,3 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -16,7 +15,7 @@ module.exports = {
       use: {
         loader: 'babel-loader',
         options: {
-          presets: ['latest', 'stage-3', 'env']
+          presets: ['env']
         }
       }
     }]
