@@ -16,7 +16,7 @@ defmodule GromelWeb.Router do
   scope "/", GromelWeb do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
+    get "/", PageController, :index, as: :root
   end
 
   # Other scopes may use custom stacks.

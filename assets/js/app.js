@@ -1,4 +1,7 @@
+import '../css/app.css'
 import "phoenix_html"
 import { Socket } from "phoenix"
+import Elm from '../elm/src/Main.elm'
 
-alert("hello from webpack XAVIER")
+const container = document.querySelector("#app")
+const app = Elm.Main.embed(container)

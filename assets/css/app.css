@@ -1,1 +1,64 @@
-/* This file is for your main application css. */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: sans-serif;
+    line-height: 1.15;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    color: #000;
+    padding: 0;
+    margin: 0;
+    font-weight: 100;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.info,
+.error {
+    display: block;
+    font-weight: 100;
+    padding: 12px;
+}
+
+.info {
+    background-color: #dcedc1;
+    color: #11999e;
+}
+
+.error {
+    background-color: #ffc8c8;
+    color: #e84a5f;
+}
+
+.info:empty,
+.error:empty {
+    display: none;
+}
+
+a {
+  cursor: pointer;
+  color: green;
+}
+
+nav a {
+  margin: 12px;
+}

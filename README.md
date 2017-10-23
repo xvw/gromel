@@ -2,8 +2,6 @@
 
 ## Prerequiste
 
-  * `cp .env.example .env`
-  * Fill your data in .env
   * `createuser -sd gromel`
 
 # Fetch assets (Js/Elm)
