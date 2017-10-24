@@ -38,7 +38,7 @@ fragment model =
         Error code message ->
             [ error code message ]
 
-        Routage content ->
+        Routed content ->
             pageFragment (Patch model) content
 
 

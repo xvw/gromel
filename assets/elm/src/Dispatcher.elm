@@ -11,7 +11,7 @@ import Page
 
 
 type Model
-    = Routage Page.Page
+    = Routed Page.Page
     | Error Int String
 
 
@@ -39,13 +39,13 @@ doRouting potentialRoute =
             -- separate modules
             case route of
                 Home ->
-                    Routage Page.Home
+                    Routed Page.Home
 
                 About ->
-                    Routage (Page.About False)
+                    Routed (Page.About False)
 
                 Links ->
-                    Routage
+                    Routed
                         (Page.Links
                             [ { name = "Google", url = "https://google.fr" }
                             , { name = "My blog", url = "https://xvw.github.io" }
@@ -60,8 +60,8 @@ doRouting potentialRoute =
 toggleAbout : Model -> Model
 toggleAbout model =
     case model of
-        Routage (Page.About t) ->
-            Routage (Page.About (not t))
+        Routed (Page.About t) ->
+            Routed (Page.About (not t))
 
         _ ->
             model
