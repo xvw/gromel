@@ -3,7 +3,7 @@
 
 module View exposing (global)
 
-import Dispatcher exposing (Model(..), Message(..))
+import Dispatcher exposing (Model(..), Message(..), toggleAbout)
 import Html exposing (Html, text, div, nav, a, h1, h2, p, ul, li, button)
 import Html.Events exposing (onClick)
 import Html.Attributes as Attr
@@ -44,16 +44,6 @@ fragment model =
 
 
 -- Render a page fragment
-
-
-toggleAbout : Model -> Model
-toggleAbout model =
-    case model of
-        Routage (About t) ->
-            Routage (About (not t))
-
-        _ ->
-            model
 
 
 pageFragment : ((Model -> Model) -> Message) -> Page -> List (Html Message)

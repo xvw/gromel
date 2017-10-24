@@ -1,7 +1,7 @@
 {- This module describes all of the available interaction as messages -}
 
 
-module Dispatcher exposing (Message(..), Model(..), doRouting)
+module Dispatcher exposing (Message(..), Model(..), doRouting, toggleAbout)
 
 import Router exposing (Route(..))
 import Page
@@ -51,3 +51,17 @@ doRouting potentialRoute =
                             , { name = "My blog", url = "https://xvw.github.io" }
                             ]
                         )
+
+
+
+-- Patch for the page About
+
+
+toggleAbout : Model -> Model
+toggleAbout model =
+    case model of
+        Routage (Page.About t) ->
+            Routage (Page.About (not t))
+
+        _ ->
+            model
