@@ -7,21 +7,21 @@ import Router exposing (Route(..))
 import Page
 
 
--- A message (to be broadcasted by the Elm Architecture)
-
-
-type Message
-    = Routing (Maybe Route) -- an url mutation
-    | Patch -- a page mutation
-
-
-
 -- A model to represente the state of the Application
 
 
 type Model
     = Routage Page.Page
     | Error Int String
+
+
+
+-- A message (to be broadcasted by the Elm Architecture)
+
+
+type Message
+    = Routing (Maybe Route) -- an url mutation
+    | Patch Model (Model -> Model) -- a page mutation
 
 
 
@@ -39,10 +39,10 @@ doRouting potentialRoute =
             -- separate modules
             case route of
                 Home ->
-                    Routage (Page.Home "Hello World")
+                    Routage Page.Home
 
                 About ->
-                    Routage (Page.About "This page is an example of Elm")
+                    Routage (Page.About False)
 
                 Links ->
                     Routage

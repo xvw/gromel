@@ -72,3 +72,11 @@ nav > a {
  #app div {
    margin: 16px;
  }
+
+ .opened {
+   display: block;
+ }
+
+ .closed {
+   display: none;
+ }

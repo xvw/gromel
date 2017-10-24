@@ -9,6 +9,6 @@ module Page exposing (Page(..))
 
 
 type Page
-    = Home String
-    | About String
+    = Home
+    | About Bool
     | Links (List { name : String, url : String })

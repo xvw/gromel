@@ -21,8 +21,11 @@ update message model =
         Routing potentialRoute ->
             just (Dispatcher.doRouting potentialRoute)
 
-        Patch ->
-            just model
+        Patch target f ->
+            if model == target then
+                just (f model)
+            else
+                just model
 
 
 

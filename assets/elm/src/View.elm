@@ -4,7 +4,8 @@
 module View exposing (global)
 
 import Dispatcher exposing (Model(..), Message(..))
-import Html exposing (Html, text, div, nav, a, h1, h2, p, ul, li)
+import Html exposing (Html, text, div, nav, a, h1, h2, p, ul, li, button)
+import Html.Events exposing (onClick)
 import Html.Attributes as Attr
 import Router
 import Page exposing (Page(..))
@@ -13,7 +14,7 @@ import Page exposing (Page(..))
 -- The global view of the application
 
 
-global : Dispatcher.Model -> Html message
+global : Model -> Html Message
 global model =
     div []
         [ h1 []
@@ -31,28 +32,50 @@ global model =
 -- Render a model (as a widget)
 
 
-fragment : Dispatcher.Model -> List (Html message)
+fragment : Model -> List (Html Message)
 fragment model =
     case model of
         Error code message ->
             [ error code message ]
 
         Routage content ->
-            pageFragment content
+            pageFragment (Patch model) content
 
 
 
 -- Render a page fragment
 
 
-pageFragment : Page -> List (Html message)
-pageFragment page =
-    case page of
-        Home content ->
-            [ text content ]
+toggleAbout : Model -> Model
+toggleAbout model =
+    case model of
+        Routage (About t) ->
+            Routage (About (not t))
 
-        About content ->
-            [ text content ]
+        _ ->
+            model
+
+
+pageFragment : ((Model -> Model) -> Message) -> Page -> List (Html Message)
+pageFragment patch page =
+    case page of
+        Home ->
+            [ text "Hello World" ]
+
+        About toggle ->
+            let
+                toggler =
+                    if toggle then
+                        "opened"
+                    else
+                        "closed"
+            in
+                [ text "About page"
+                , button
+                    [ onClick (patch toggleAbout) ]
+                    [ text "Toggle content" ]
+                , div [ Attr.class toggler ] [ text "Hidden content" ]
+                ]
 
         Links links ->
             [ ul []
