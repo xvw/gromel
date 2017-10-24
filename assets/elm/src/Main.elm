@@ -1,28 +1,40 @@
 module Main exposing (..)
 
-import Html exposing (Html)
-import Model exposing (State(..))
-import Views
+import Helper exposing (just)
+import Navigation
+import Router exposing (fromLocation)
+import Dispatcher exposing (Message(..), Model(..))
+import View exposing (global)
 
 
-type Message
-    = Unit
-
-
-type alias Model =
-    State
+init : Navigation.Location -> ( Model, Cmd Message )
+init location =
+    location
+        |> fromLocation
+        |> Dispatcher.doRouting
+        |> just
 
 
 update : Message -> Model -> ( Model, Cmd Message )
-update _ model =
-    ( model, Cmd.none )
+update message model =
+    case message of
+        Routing potentialRoute ->
+            just (Dispatcher.doRouting potentialRoute)
+
+        Patch ->
+            just model
+
+
+
+-- Main process
 
 
 main : Platform.Program Never Model Message
 main =
-    Html.program
-        { init = ( Home, Cmd.none )
-        , subscriptions = (\_ -> Sub.batch [])
+    Navigation.program
+        (fromLocation >> Routing)
+        { init = init
         , update = update
-        , view = Views.global
+        , subscriptions = (\_ -> Sub.none)
+        , view = global
         }

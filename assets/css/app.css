@@ -49,16 +49,26 @@ body {
     color: #e84a5f;
 }
 
+.error h2, .info h2 {
+  margin: 0;
+}
+
 .info:empty,
 .error:empty {
     display: none;
 }
 
-a {
-  cursor: pointer;
-  color: green;
+nav {
+  background-color: #cde3eb;
+  padding: 8px;
 }
 
-nav a {
-  margin: 12px;
+nav > a {
+  margin: 0 8px;
+  color: #143a52;
+  padding: 6px 12px;
+  cursor: pointer;
 }
+ #app div {
+   margin: 16px;
+ }
