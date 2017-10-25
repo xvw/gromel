@@ -6,13 +6,14 @@ module Dispatcher
         ( Message(..)
         , Model
         , State(..)
-        , Channel(..)
+        , Chan(..)
         , doRouting
         , toggleAbout
         , handleInput
         , addToStack
         , resetStack
         , publish
+        , handleMessage
         )
 
 import Router exposing (Route(..))
@@ -39,14 +40,14 @@ type alias Model =
 -- A message (to be broadcasted by the Elm Architecture)
 
 
-type Channel
+type Chan
     = Simple Ports.Message
 
 
 type Message
     = Routing (Maybe Route) -- an url mutation
     | Patch (Model -> ( Model, Cmd Message )) -- a page mutation
-    | Discrete Channel
+    | Discrete (Chan -> Model -> ( Model, Cmd Message )) Chan
 
 
 
@@ -128,6 +129,27 @@ addToStack model =
 
         _ ->
             unauthorized model
+
+
+handleMessage : Chan -> Model -> ( Model, Cmd message )
+handleMessage channel model =
+    let
+        offset =
+            case model.state of
+                Routed (Page.Post _) ->
+                    0
+
+                _ ->
+                    1
+    in
+        case channel of
+            Simple message ->
+                ( { model
+                    | messages = message.body :: model.messages
+                    , total = model.total + offset
+                  }
+                , Cmd.none
+                )
 
 
 resetStack : Model -> ( Model, Cmd message )

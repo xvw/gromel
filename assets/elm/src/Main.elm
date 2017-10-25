@@ -3,7 +3,7 @@ module Main exposing (..)
 import Helper exposing (just)
 import Navigation
 import Router exposing (fromLocation)
-import Dispatcher exposing (Message(..), Model, Channel(..), State(..))
+import Dispatcher exposing (Message(..), Model, Chan(..), State(..))
 import Page
 import View exposing (global)
 import Ports exposing (subMessage)
@@ -30,27 +30,14 @@ update message model =
         Patch apply_patch ->
             apply_patch model
 
-        Discrete (Simple socket_message) ->
-            let
-                offset =
-                    case model.state of
-                        Routed (Page.Post _) ->
-                            0
-
-                        _ ->
-                            1
-            in
-                just
-                    { model
-                        | messages = socket_message.body :: model.messages
-                        , total = model.total + offset
-                    }
+        Discrete apply_patch pub ->
+            apply_patch pub model
 
 
 subscriptions : Model -> Sub Message
 subscriptions model =
     Sub.batch
-        [ Ports.subMessage (\message -> Discrete (Simple message)) ]
+        [ Ports.subMessage (\s -> Discrete Dispatcher.handleMessage (Simple s)) ]
 
 
 
