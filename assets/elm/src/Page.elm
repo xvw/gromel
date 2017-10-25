@@ -11,4 +11,6 @@ module Page exposing (Page(..))
 type Page
     = Home
     | About Bool
-    | Links (List { name : String, url : String })
+    | Links
+    | Step { input : String, stack : List String }
+    | Post { input : String }

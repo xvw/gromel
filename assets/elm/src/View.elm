@@ -3,9 +3,36 @@
 
 module View exposing (global)
 
-import Dispatcher exposing (Model(..), Message(..), toggleAbout)
-import Html exposing (Html, text, div, nav, a, h1, h2, p, ul, li, button)
-import Html.Events exposing (onClick)
+import Dispatcher
+    exposing
+        ( Model
+        , Message(..)
+        , State(..)
+        , toggleAbout
+        , handleInput
+        , addToStack
+        , resetStack
+        , publish
+        )
+import Html
+    exposing
+        ( Html
+        , text
+        , div
+        , nav
+        , a
+        , h1
+        , h2
+        , p
+        , ul
+        , ol
+        , li
+        , button
+        , br
+        , input
+        , span
+        )
+import Html.Events exposing (onClick, onInput)
 import Html.Attributes as Attr
 import Router
 import Page exposing (Page(..))
@@ -16,13 +43,16 @@ import Page exposing (Page(..))
 
 global : Model -> Html Message
 global model =
-    div []
+    div [ Attr.class "content" ]
         [ h1 []
             [ text "My ugly page" ]
         , nav []
             [ a [ Router.href Router.Home ] [ text "Home" ]
             , a [ Router.href Router.About ] [ text "About" ]
             , a [ Router.href Router.Links ] [ text "Links" ]
+            , a [ Router.href Router.Step ] [ text "Multiple step sample" ]
+            , a [ Router.href Router.Post ]
+                [ text ("Post message (" ++ (toString model.total) ++ ")") ]
             ]
         , div [] (fragment model)
         ]
@@ -34,46 +64,116 @@ global model =
 
 fragment : Model -> List (Html Message)
 fragment model =
-    case model of
+    case model.state of
         Error code message ->
             [ error code message ]
 
         Routed content ->
-            pageFragment (Patch model) content
+            pageFragment model content
 
 
 
 -- Render a page fragment
 
 
-pageFragment : ((Model -> Model) -> Message) -> Page -> List (Html Message)
-pageFragment patch page =
+pageFragment : Model -> Page -> List (Html Message)
+pageFragment model page =
     case page of
         Home ->
-            [ text "Hello World" ]
+            [ div [ Attr.class "page" ]
+                [ h2 [] [ text "Home" ]
+                , text "Hello World"
+                ]
+            ]
 
         About toggle ->
+            about toggle
+
+        Links ->
             let
-                toggler =
-                    if toggle then
-                        "opened"
-                    else
-                        "closed"
+                links =
+                    [ { name = "Google", url = "https://google.fr" }
+                    , { name = "My blog", url = "https://xvw.github.io" }
+                    ]
             in
-                [ text "About page"
-                , button
-                    [ onClick (patch toggleAbout) ]
-                    [ text "Toggle content" ]
-                , div [ Attr.class toggler ] [ text "Hidden content" ]
+                [ div [ Attr.class "page" ]
+                    [ h2 [] [ text "Links" ]
+                    , ul []
+                        (List.map
+                            (\link -> li [] [ linkToA link ])
+                            links
+                        )
+                    ]
                 ]
 
-        Links links ->
-            [ ul []
-                (List.map
-                    (\link -> li [] [ linkToA link ])
-                    links
-                )
+        Step state ->
+            let
+                btn =
+                    if (List.length state.stack) > 4 then
+                        [ button [ onClick (Patch resetStack) ] [ text "reset" ] ]
+                    else
+                        []
+            in
+                [ input
+                    [ Attr.placeholder "A Task"
+                    , Attr.value state.input
+                    , onInput (\s -> Patch (handleInput s))
+                    ]
+                    []
+                , button
+                    [ onClick (Patch addToStack) ]
+                    [ text "Add to Stack" ]
+                , div [ Attr.class "page" ]
+                    [ h2 [] [ text "Multiple step page" ]
+                    , ol []
+                        (List.map
+                            (\step -> li [] [ text step ])
+                            state.stack
+                        )
+                    ]
+                ]
+                    ++ btn
+
+        Post state ->
+            [ input
+                [ Attr.placeholder "A message"
+                , Attr.value state.input
+                , onInput (\s -> Patch (handleInput s))
+                ]
+                []
+            , button
+                [ onClick (Patch publish) ]
+                [ text "Publish" ]
+            , div [ Attr.class "page" ]
+                [ h2 [] [ text "List of messages" ]
+                , ul []
+                    (List.map
+                        (\message -> li [] [ text message ])
+                        model.messages
+                    )
+                ]
             ]
+
+
+about : Bool -> List (Html Message)
+about toggle =
+    let
+        toggler =
+            if toggle then
+                "opened"
+            else
+                "closed"
+    in
+        [ button
+            [ onClick (Patch toggleAbout) ]
+            [ text "Toggle content" ]
+        , div [ Attr.class "page" ]
+            [ h2 [] [ text "About" ]
+            , text "This is an "
+            , span [ Attr.class toggler ] [ text "ugly" ]
+            , text " experience !"
+            ]
+        ]
 
 
 
@@ -84,7 +184,7 @@ error : Int -> String -> Html message
 error code message =
     div [ Attr.class "error" ]
         [ h2 [] [ text (toString code) ]
-        , p [] [ text message ]
+        , text message
         ]
 
 

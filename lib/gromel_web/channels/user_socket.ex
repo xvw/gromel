@@ -2,7 +2,7 @@ defmodule GromelWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", GromelWeb.RoomChannel
+  channel "room:*", GromelWeb.RoomChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -22,6 +22,8 @@ defmodule GromelWeb.UserSocket do
   def connect(_params, socket) do
     {:ok, socket}
   end
+
+
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
